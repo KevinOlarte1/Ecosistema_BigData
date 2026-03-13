@@ -1,0 +1,62 @@
+version: "3"
+
+services:
+
+  namenode:
+    build: ./containers/namenode
+    container_name: Nodo-principal
+    hostname: namenode
+    ports:
+      - "9870:9870"
+      - "9000:9000"
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - namenode_data:/hadoop/dfs/name
+    networks:
+      - red-docker
+
+  datanode1:
+    build: ./containers/datanode
+    container_name: datos-1
+    hostname: datanode1
+    ports:
+      - "9864:9864"
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - datanode1_data:/hadoop/dfs/data
+    depends_on:
+      - namenode
+    networks:
+      - red-docker
+
+  datanode2:
+    build: ./containers/datanode
+    container_name: datos-2
+    hostname: datanode2
+    ports:
+      - "9865:9864"
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop.env
+    volumes:
+      - datanode2_data:/hadoop/dfs/data
+    depends_on:
+      - namenode
+    networks:
+      - red-docker
+
+
+networks:
+  red-docker:
+
+volumes:
+  namenode_data:
+  datanode1_data:
+  datanode2_data:
