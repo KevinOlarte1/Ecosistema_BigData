@@ -4,7 +4,7 @@ services:
 
   namenode:
     build: ./containers/namenode
-    container_name: Nodo-principal
+    container_name: namenode
     hostname: namenode
     ports:
       - "9870:9870"
@@ -15,12 +15,13 @@ services:
       - ./hadoop.env
     volumes:
       - namenode_data:/hadoop/dfs/name
+      - ./config/hadoop/hdfs-site.xml:/opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
     networks:
       - red-docker
 
   datanode1:
     build: ./containers/datanode
-    container_name: datos-1
+    container_name: datanode1
     hostname: datanode1
     ports:
       - "9864:9864"
@@ -30,6 +31,7 @@ services:
       - ./hadoop.env
     volumes:
       - datanode1_data:/hadoop/dfs/data
+      - ./config/hadoop/hdfs-site.xml:/opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
     depends_on:
       - namenode
     networks:
@@ -47,11 +49,11 @@ services:
       - ./hadoop.env
     volumes:
       - datanode2_data:/hadoop/dfs/data
+      - ./config/hadoop/hdfs-site.xml:/opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
     depends_on:
       - namenode
     networks:
       - red-docker
-
 
 networks:
   red-docker:
